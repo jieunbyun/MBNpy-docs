@@ -10,3 +10,4 @@ MBN enables applying Bayesian network for **large-scale systems** (i.e. high-dim
    :caption: Documentation
 
    getting_started_MBN
+   getting_started_BRC

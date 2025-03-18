@@ -1,0 +1,319 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started with the BRC Algorithm &mdash; MBNpy 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="/MBNpy/docs/sphinx/getting_started_BRC.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Getting Started with MBNpy" href="getting_started_MBN.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MBNpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started_MBN.html">Getting Started with MBNpy</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started with the BRC Algorithm</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-demonstration">Code Demonstration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mbnpy-version">MBNPy Version</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-five-edge-network">Example: Five-Edge Network</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#network-topology">Network Topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-component-events">Defining Component Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-the-system-event">Defining the System Event</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-brc-algorithm">Running the BRC Algorithm</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#brc-output">BRC output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extracting-system-rules">Extracting System Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#computing-component-importance-measure">Computing Component Importance Measure</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MBNpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Getting Started with the BRC Algorithm</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/getting_started_BRC.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started-with-the-brc-algorithm">
+<h1>Getting Started with the BRC Algorithm<a class="headerlink" href="#getting-started-with-the-brc-algorithm" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <strong>Branch and Bound Algorithm for Reliability of Coherent Systems</strong> (<strong>BRC</strong>) is a powerful method for <strong>system reliability analysis</strong>.</p>
+<p>For more details, refer to the official publication on <a class="reference external" href="https://arxiv.org/abs/2410.22363">arXiv</a>.</p>
+</div>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>The BRC algorithm identifies (sub-)minimal survival and failure rules and computes the system failure probability using a branch-and-bound approach.</p>
+<p>BRC applies to <strong>any general coherent system</strong>, meaning systems where an improvement in component states never leads to a worse system state.</p>
+<p>The figure below illustrates the BRC process:</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="_images/brc.png"><img alt="BRC Algorithm" src="_images/brc.png" style="width: 800px;" />
+</a>
+<figcaption>
+<p><span class="caption-text"><strong>Illustration of the BRC algorithm.</strong></span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="code-demonstration">
+<h2>Code Demonstration<a class="headerlink" href="#code-demonstration" title="Link to this heading"></a></h2>
+<p>The Jupyter notebook for this tutorial is available on <a class="reference external" href="https://github.com/jieunbyun/MBNpy/blob/main/notebooks/tutorial_brc.ipynb">GitHub</a>.</p>
+<section id="mbnpy-version">
+<h3>MBNPy Version<a class="headerlink" href="#mbnpy-version" title="Link to this heading"></a></h3>
+<p>This tutorial uses <strong>MBNPy v1.0.2</strong>.</p>
+</section>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>Ensure you have the required dependencies installed before running the tutorial:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">mbnpy</span> <span class="kn">import</span> <span class="n">cpm</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">inference</span>
+<span class="kn">from</span> <span class="nn">networkx.algorithms.flow</span> <span class="kn">import</span> <span class="n">shortest_augmenting_path</span>
+<span class="kn">from</span> <span class="nn">mbnpy</span> <span class="kn">import</span> <span class="n">brc</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</section>
+<section id="example-five-edge-network">
+<h2>Example: Five-Edge Network<a class="headerlink" href="#example-five-edge-network" title="Link to this heading"></a></h2>
+<section id="network-topology">
+<h3>Network Topology<a class="headerlink" href="#network-topology" title="Link to this heading"></a></h3>
+<p>We analyse the <strong>five-edge network</strong> below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nodes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;n1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+         <span class="s1">&#39;n2&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+         <span class="s1">&#39;n3&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+         <span class="s1">&#39;n4&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)}</span>
+
+<span class="n">edges</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;e1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;n1&#39;</span><span class="p">,</span> <span class="s1">&#39;n2&#39;</span><span class="p">],</span>
+         <span class="s1">&#39;e2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;n1&#39;</span><span class="p">,</span> <span class="s1">&#39;n3&#39;</span><span class="p">],</span>
+         <span class="s1">&#39;e3&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;n2&#39;</span><span class="p">,</span> <span class="s1">&#39;n3&#39;</span><span class="p">],</span>
+         <span class="s1">&#39;e4&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;n2&#39;</span><span class="p">,</span> <span class="s1">&#39;n4&#39;</span><span class="p">],</span>
+         <span class="s1">&#39;e5&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;n3&#39;</span><span class="p">,</span> <span class="s1">&#39;n4&#39;</span><span class="p">]}</span>
+
+<span class="c1"># Plot network</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+    <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">edges</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="o">*</span><span class="n">pair</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">get_node_attributes</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s1">&#39;pos&#39;</span><span class="p">)</span>
+<span class="n">edge_labels</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">get_edge_attributes</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">)</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">with_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edge_labels</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">edge_labels</span><span class="o">=</span><span class="n">edge_labels</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="_images/network.png"><img alt="Network Topology" src="_images/network.png" style="width: 500px;" />
+</a>
+<figcaption>
+<p><span class="caption-text"><strong>Network topology with five edges.</strong></span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="defining-component-events">
+<h3>Defining Component Events<a class="headerlink" href="#defining-component-events" title="Link to this heading"></a></h3>
+<p>The <strong>state of each edge</strong> is represented by a binary variable:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">varis</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">varis</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># 0 = non-functional, 1 = functional</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The probabilities of each component event:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">probs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;e1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">},</span>
+         <span class="s1">&#39;e2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">},</span>
+         <span class="s1">&#39;e3&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">},</span>
+         <span class="s1">&#39;e4&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">},</span>
+         <span class="s1">&#39;e5&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mf">0.90</span><span class="p">}}</span>
+</pre></div>
+</div>
+</section>
+<section id="defining-the-system-event">
+<h3>Defining the System Event<a class="headerlink" href="#defining-the-system-event" title="Link to this heading"></a></h3>
+<p>The system’s state is determined by <strong>connectivity</strong> between an <strong>origin-destination (OD) pair</strong>.</p>
+<p>A system function must:
+- Take a <strong>dictionary of component states</strong> as input.
+- Return:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><strong>System value</strong> (informational).</p></li>
+<li><p><strong>System state</strong> (<cite>‘s’</cite> for survival, <cite>‘f’</cite> for failure).</p></li>
+<li><p><strong>Minimum component state</strong> that guarantees the system state.</p></li>
+</ol>
+</div></blockquote>
+<p>The function is implemented as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">net_conn</span><span class="p">(</span><span class="n">comps_st</span><span class="p">,</span> <span class="n">od_pair</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">varis</span><span class="p">):</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">comps_st</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">G</span><span class="p">[</span><span class="n">edges</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]][</span><span class="n">edges</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">]][</span><span class="s1">&#39;capacity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">varis</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+
+    <span class="c1"># Perform max-flow analysis</span>
+    <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">od_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;new_d&#39;</span><span class="p">,</span> <span class="n">capacity</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">f_val</span><span class="p">,</span> <span class="n">f_dict</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">maximum_flow</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">od_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;new_d&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">f_val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">f_val</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">f_val</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>The OD pair is set to <cite>(‘n1’, ‘n4’)</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">od_pair</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;n1&#39;</span><span class="p">,</span> <span class="s1">&#39;n4&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="running-the-brc-algorithm">
+<h2>Running the BRC Algorithm<a class="headerlink" href="#running-the-brc-algorithm" title="Link to this heading"></a></h2>
+<p>Now, we run the BRC algorithm, ensuring that the analysis <strong>is complete</strong> (<cite>pf_bnd_wr=0.0</cite>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">brs</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">sys_res</span><span class="p">,</span> <span class="n">monitor</span> <span class="o">=</span> <span class="n">brc</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">sys_fun</span><span class="p">,</span> <span class="n">max_sf</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">max_nb</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">pf_bnd_wr</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="brc-output">
+<h3>BRC output<a class="headerlink" href="#brc-output" title="Link to this heading"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>*** Analysis completed with 8 system function runs ***
+System failure probability: 5.16e-3
+Found non-dominated rules (failure: 4, survival: 4)
+</pre></div>
+</div>
+</section>
+<section id="extracting-system-rules">
+<h3>Extracting System Rules<a class="headerlink" href="#extracting-system-rules" title="Link to this heading"></a></h3>
+<p>To retrieve these rules, use:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">rules</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">])</span>  <span class="c1"># Survival rules</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rules</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">])</span>  <span class="c1"># Failure rules</span>
+</pre></div>
+</div>
+<p>This returns:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Survival Rules: [{&#39;e1&#39;: 1, &#39;e4&#39;: 1}, {&#39;e2&#39;: 1, &#39;e5&#39;: 1}, {&#39;e2&#39;: 1, &#39;e3&#39;: 1, &#39;e4&#39;: 1}, {&#39;e1&#39;: 1, &#39;e3&#39;: 1, &#39;e5&#39;: 1}]
+Failure Rules: [{&#39;e4&#39;: 0, &#39;e5&#39;: 0}, {&#39;e1&#39;: 0, &#39;e2&#39;: 0}, {&#39;e1&#39;: 0, &#39;e3&#39;: 0, &#39;e5&#39;: 0}, {&#39;e2&#39;: 0, &#39;e3&#39;: 0, &#39;e4&#39;: 0}]
+</pre></div>
+</div>
+</section>
+</section>
+<section id="computing-component-importance-measure">
+<h2>Computing Component Importance Measure<a class="headerlink" href="#computing-component-importance-measure" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://doi.org/10.1016/j.ress.2008.02.011">Conditional probability-based importance measure (CPIM)</a> is calculated as:</p>
+<div class="math notranslate nohighlight">
+\[P(X_n=0 | S=0) = \frac{P(X_n=0, S=0)}{P(S=0)}\]</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_cim</span><span class="p">(</span><span class="n">comp_name</span><span class="p">,</span> <span class="n">cpms</span><span class="p">,</span> <span class="n">varis</span><span class="p">,</span> <span class="n">pf</span><span class="p">):</span>
+    <span class="n">var_elim_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">edges</span> <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="n">comp_name</span><span class="p">]</span>
+    <span class="n">cpm_s_x</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">variable_elim</span><span class="p">(</span><span class="n">cpms</span><span class="p">,</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">var_elim_names</span><span class="p">])</span>
+    <span class="n">p_s0_x0</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">cpm_s_x</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">cpm_s_x</span><span class="o">.</span><span class="n">C</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))])</span>
+    <span class="k">return</span> <span class="n">p_s0_x0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">pf</span>
+
+<span class="n">cims</span> <span class="o">=</span> <span class="p">{</span><span class="n">comp</span><span class="p">:</span> <span class="n">get_cim</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span> <span class="n">cpms</span><span class="p">,</span> <span class="n">varis</span><span class="p">,</span> <span class="mf">5.16e-3</span><span class="p">)</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cims</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Results:
+{‘e1’: 0.036, ‘e2’: 0.031, ‘e3’: 0.059, ‘e4’: 0.928, ‘e5’: 0.934}</p>
+<p>Component importance visualisation:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/cims.png"><img alt="Component Importance" src="_images/cims.png" style="width: 500px;" />
+</a>
+</figure>
+<ul class="simple">
+<li><p>The <strong>BRC algorithm</strong> calculates <strong>system failure probability</strong> for <strong>general coherent systems</strong>.</p></li>
+<li><p>It identifies <strong>(sub-)minimal survival and failure rules</strong>.</p></li>
+<li><p>Identified rules are used to decompose system event space into <strong>failure and survival branches</strong>.</p></li>
+<li><p><strong>Branches</strong> can be used to compute advanced probability queries such as <strong>component importance measures</strong>.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started_MBN.html" class="btn btn-neutral float-left" title="Getting Started with MBNpy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, DUCO team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
