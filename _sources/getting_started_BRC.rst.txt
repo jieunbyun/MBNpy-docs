@@ -5,8 +5,6 @@ Getting Started with the BRC Algorithm
 .. note::
    The **Branch and Bound Algorithm for Reliability of Coherent Systems** (**BRC**) is a powerful method for **system reliability analysis**.
 
-   For more details, refer to the official publication on `arXiv <https://arxiv.org/abs/2410.22363>`_.
-
 Introduction
 ============
 
@@ -14,7 +12,7 @@ The BRC algorithm identifies (sub-)minimal survival and failure rules and comput
 
 BRC applies to **any general coherent system**, meaning systems where an improvement in component states never leads to a worse system state.
 
-The figure below illustrates the BRC process:
+The figure below illustrates the BRC process (or more details, refer to the official publication on `arXiv <https://arxiv.org/abs/2410.22363>`_):
 
 .. figure:: _static/img/brc_tutorial/brc.png
    :width: 800px
