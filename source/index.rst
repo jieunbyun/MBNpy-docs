@@ -9,4 +9,4 @@ MBN enables applying Bayesian network for **large-scale systems** (i.e. high-dim
    :maxdepth: 2
    :caption: Documentation
 
-   getting_started
+   getting_started_MBN
