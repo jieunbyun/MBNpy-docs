@@ -3,7 +3,7 @@ Getting Started with the BRC Algorithm
 ==========================================
 
 .. note::
-   The **Branch and Bound Algorithm for Reliability of Coherent Systems** (**BRC**) is a powerful method for **system reliability analysis**.
+   The **Branch and Bound Algorithm for Reliability of Coherent Systems** (**BRC**) is an efficient method for analysing **system reliability with discrete-state component events and a binary-state system event.** It identifies (sub-)minimal survival and failure rules while computing system failure probability using a branch-and-bound approach.
 
 Introduction
 ============
@@ -28,7 +28,7 @@ The Jupyter notebook for this tutorial is available on `GitHub <https://github.c
 
 MBNPy Version
 -------------
-This tutorial uses **MBNPy v1.0.2**.
+This tutorial uses **MBNPy v0.1.2**.
 
 Installation
 ============
