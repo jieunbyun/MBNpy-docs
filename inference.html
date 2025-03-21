@@ -1,0 +1,414 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>inference &mdash; MBNpy 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+
+  
+    <link rel="canonical" href="/MBNpy/docs/sphinx/inference.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="brc" href="brc.html" />
+    <link rel="prev" title="cpm" href="cpm.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MBNpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_MBN.html">Getting Started with MBNpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_BRC.html">Getting Started with the BRC Algorithm</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="variable.html">variable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cpm.html">cpm</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">inference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-setup">Example setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#isinscope">isinscope</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#variable-elim">variable_elim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-inf-vars">get_inf_vars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prod-msys-and-mcomps">prod_Msys_and_Mcomps</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="brc.html">brc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="branch.html">branch</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MBNpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">inference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/inference.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="inference">
+<h1>inference<a class="headerlink" href="#inference" title="Link to this heading"></a></h1>
+<section id="example-setup">
+<h2>Example setup<a class="headerlink" href="#example-setup" title="Link to this heading"></a></h2>
+<p>For the illustartion below, we set up the same example as in <code class="docutils literal notranslate"><span class="pre">cpm.Cpm</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mbnpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">cpm</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">inference</span>
+
+<span class="c1"># Define variables and CPMs</span>
+<span class="n">varis</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;fail&#39;</span><span class="p">,</span> <span class="s1">&#39;surv&#39;</span><span class="p">])</span>
+<span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">])</span>
+<span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">])</span>
+
+<span class="n">cpms</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpm</span><span class="o">.</span><span class="n">Cpm</span><span class="p">([</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">]],</span> <span class="n">no_child</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]))</span>
+<span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpm</span><span class="o">.</span><span class="n">Cpm</span><span class="p">([</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">]],</span> <span class="n">no_child</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]))</span>
+
+<span class="c1"># &#39;x3&#39; is a series system of &#39;x1&#39; and &#39;x2&#39;</span>
+<span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpm</span><span class="o">.</span><span class="n">Cpm</span><span class="p">([</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">]],</span> <span class="n">no_child</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">C</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]))</span>
+</pre></div>
+</div>
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Link to this heading"></a></h2>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">inference.</span></span><span class="sig-name descname"><span class="pre">condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cpms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cnd_vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cnd_states</span></span></em><span class="sig-paren">)</span></dt>
+<dd><blockquote>
+<div><p>Condition the CPMs on the given variables and states.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param cpms<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List or dictionary of CPMs.</p>
+</dd>
+<dt class="field-even">type cpms<span class="colon">:</span></dt>
+<dd class="field-even"><p>list or dict of Cpm</p>
+</dd>
+<dt class="field-odd">param cnd_vars<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of variables to condition on.</p>
+</dd>
+<dt class="field-even">type cnd_vars<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of Variable</p>
+</dd>
+<dt class="field-odd">param cnd_states<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of states to condition on.</p>
+</dd>
+<dt class="field-even">type cnd_states<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of int</p>
+</dd>
+<dt class="field-odd">return<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Conditioned CPMs.</p>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>list or dict of Cpm</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cpm_x3_0</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">condition</span><span class="p">([</span><span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">]],</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cpm_x3_0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Cpm</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">],</span>
+<span class="n">no_child</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="n">C</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">2</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]],</span>
+<span class="n">p</span><span class="o">=</span><span class="p">[[</span><span class="mf">1.</span><span class="p">]</span>
+<span class="p">[</span><span class="mf">1.</span><span class="p">]],</span>
+<span class="p">)]</span>
+</pre></div>
+</div>
+<p>Notice that the previous last row of the C matrix and p vector are removed.</p>
+</div></blockquote>
+</dd></dl>
+
+<section id="isinscope">
+<h3>isinscope<a class="headerlink" href="#isinscope" title="Link to this heading"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">inference.isinscope(idx,</span> <span class="pre">cpms):</span></span></dt>
+<dd><blockquote>
+<div><p>Check if variables are in the scope of a given set of CPMs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param idx<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of variable names</p>
+</dd>
+<dt class="field-even">type idx<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of str</p>
+</dd>
+<dt class="field-odd">param cpms<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list or dictionary of CPMs.</p>
+</dd>
+<dt class="field-even">type cpms<span class="colon">:</span></dt>
+<dd class="field-even"><p>list or dict of Cpm</p>
+</dd>
+<dt class="field-odd">return<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if any of the variables are in the scope of the CPMs.</p>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of bool</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">isin</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">isinscope</span><span class="p">([</span><span class="s1">&#39;x1&#39;</span><span class="p">],</span> <span class="n">cpms</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">isin</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span> <span class="kc">True</span><span class="p">]</span>
+ <span class="p">[</span><span class="kc">False</span><span class="p">]</span>
+ <span class="p">[</span> <span class="kc">True</span><span class="p">]]</span>
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="variable-elim">
+<h3>variable_elim<a class="headerlink" href="#variable-elim" title="Link to this heading"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">inference.</span></span><span class="sig-name descname"><span class="pre">variable_elim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cpms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_elim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span></dt>
+<dd><blockquote>
+<div><p>Perform variable elimination on the given CPMs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param cpms<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List or dictionary of CPMs.</p>
+</dd>
+<dt class="field-even">type cpms<span class="colon">:</span></dt>
+<dd class="field-even"><p>list or dict of Cpm</p>
+</dd>
+<dt class="field-odd">param var_elim<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of variables to eliminate in the order of elimination.</p>
+</dd>
+<dt class="field-even">type var_elim<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of Variable</p>
+</dd>
+<dt class="field-odd">param prod<span class="colon">:</span></dt>
+<dd class="field-odd"><p>If True, the Cpm is returned as a product of the remaining CPMs. If False, a list of CPMs are returned after variable elimination.</p>
+</dd>
+<dt class="field-even">return<span class="colon">:</span></dt>
+<dd class="field-even"><p>Resulting CPM.</p>
+</dd>
+<dt class="field-odd">rtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Cpm or list of Cpm</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">M_x3</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">variable_elim</span><span class="p">(</span><span class="n">cpms</span><span class="p">,</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">]])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">M_x3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Cpm</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">],</span>
+    <span class="n">no_child</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">C</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+    <span class="n">p</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.28</span><span class="p">]</span>
+    <span class="p">[</span><span class="mf">0.72</span><span class="p">]],</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>The CPM represents <span class="math notranslate nohighlight">\(P(X_3) = \sum_{X_2} P(X_2) \cdot \sum_{X_1} P(X_3| X_1, X_2) \cdot P(X_1)\)</span>.</p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="get-inf-vars">
+<h3>get_inf_vars<a class="headerlink" href="#get-inf-vars" title="Link to this heading"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">inference.</span></span><span class="sig-name descname"><span class="pre">get_inf_vars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cpms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">varis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ve_ord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><blockquote>
+<div><p>Get the list of variables in the scope of variables in <code class="docutils literal notranslate"><span class="pre">varis</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param cpms<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List or dictionary of CPMs.</p>
+</dd>
+<dt class="field-even">type cpms<span class="colon">:</span></dt>
+<dd class="field-even"><p>list or dict of Cpm</p>
+</dd>
+<dt class="field-odd">param varis<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of variable names or a single variable name whose marginal distributions are of interest.</p>
+</dd>
+<dt class="field-even">type varis<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of str or str</p>
+</dd>
+<dt class="field-odd">param ve_ord<span class="colon">:</span></dt>
+<dd class="field-odd"><p>variable names in the order of elimination. If provided, the function returns the variables in the given order.</p>
+</dd>
+<dt class="field-even">type ve_ord<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of str</p>
+</dd>
+<dt class="field-odd">return<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of variable names in the scope of the given variables.</p>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of str</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<p>Below, an irrelevant variable ‘x4’ is added:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;x4&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">])</span>
+<span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;x4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpm</span><span class="o">.</span><span class="n">Cpm</span><span class="p">([</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x4&#39;</span><span class="p">]],</span> <span class="n">no_child</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>Then, the function is applied:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">varis_inf</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">get_inf_vars</span><span class="p">(</span><span class="n">cpms</span><span class="p">,</span> <span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">varis_inf</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;x3&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Notice that ‘x4’ is not included in the list. With the list that includes only relevant variables to obtain the marginal distribution of ‘x3’, one can perform variable elimination:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">M_x3</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">variable_elim</span><span class="p">([</span><span class="n">cpms</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">varis_inf</span><span class="p">],</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">]])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">M_x3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Cpm</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">],</span>
+    <span class="n">no_child</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">C</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+    <span class="n">p</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.28</span><span class="p">]</span>
+    <span class="p">[</span><span class="mf">0.72</span><span class="p">]],</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>where the result is the same as the previous example with <code class="docutils literal notranslate"><span class="pre">inference.variable_elim</span></code>. By eliminating irrelevant variables, one can save computational time.</p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="prod-msys-and-mcomps">
+<h3>prod_Msys_and_Mcomps<a class="headerlink" href="#prod-msys-and-mcomps" title="Link to this heading"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">prod_Msys_and_Mcomps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Msys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Mcomps_list</span></span></em><span class="sig-paren">)</span></dt>
+<dd><blockquote>
+<div><p>Compute the product of a system CPM and the list of component CPMs: <span class="math notranslate nohighlight">\(P(X_{sys},X_1,...,X_n) = P(X_{sys}|X_1,...,X_n) \cdot P(X_1) \cdot ... \cdot P(X_n)\)</span>. The function is faster than <code class="docutils literal notranslate"><span class="pre">product</span></code> by exploiting the knowledge on which one is a system CPM and which ones are component CPMs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param Msys<span class="colon">:</span></dt>
+<dd class="field-odd"><p>System CPM.</p>
+</dd>
+<dt class="field-even">type Msys<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cpm</p>
+</dd>
+<dt class="field-odd">param Mcomps_list<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of component CPMs.</p>
+</dd>
+<dt class="field-even">type Mcomps_list<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of Cpm</p>
+</dd>
+<dt class="field-odd">return<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Product of the system and component CPMs.</p>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cpm</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Mprod</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">prod_Msys_and_Mcomps</span><span class="p">(</span><span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">],</span> <span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">]])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Mprod</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Cpm</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">],</span>
+    <span class="n">no_child</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">C</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]],</span>
+    <span class="n">p</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.1</span> <span class="p">]</span>
+    <span class="p">[</span><span class="mf">0.18</span><span class="p">]</span>
+    <span class="p">[</span><span class="mf">0.72</span><span class="p">]],</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cpm.html" class="btn btn-neutral float-left" title="cpm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="brc.html" class="btn btn-neutral float-right" title="brc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, DUCO team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

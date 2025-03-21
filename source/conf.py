@@ -31,4 +31,11 @@ exclude_patterns = []
 
 html_baseurl = "/MBNpy/docs/sphinx/"
 html_theme = 'sphinx_rtd_theme'
-html_static_path = []
+html_static_path = ['_static']
+html_css_files = [
+    'custom.css',
+]
+
+import os
+import sys
+sys.path.insert(0, r"C:\Users\bjieu\git\mbnpy\mbnpy")
