@@ -253,3 +253,54 @@ prod_Msys_and_Mcomps
             [0.18]
             [0.72]],
             )
+
+cal_first_order_sobol
+~~~~~~~~~~~~~~~~~~~~~
+
+.. py:function:: cal_first_order_sobol(cpms, input_vars, target_var, elim_order=None)
+   :noindex:
+
+   Calculate the first-order Sobol indices for a given target variable based on the provided conditional probability models (CPMs) and input variables.
+
+   The calculation is performed by variable elimination.
+
+   :param cpms: list or dictionary of CPMs.
+   :type cpms: dict[str, Cpm] or list[Cpm]
+   :param input_vars: Input variables (as names or ``Variable`` objects).
+   :type input_vars: list[str | Variable] or dict[str, Variable]
+   :param target_var: The target variable of interest.
+   :type target_var: str or Variable
+   :param elim_order: Optional elimination order of variables.
+   :type elim_order: list[str | Variable], optional
+   :return: First-order Sobol indices for the input variables.
+   :rtype: list[float]
+
+   :raises TypeError: If inputs are of incorrect types.
+   :raises ValueError: If a specified variable is not found in the CPMs.
+
+   **Example:**
+
+   .. code-block:: python
+
+    varis = {}
+    varis['x'] = variable.Variable(name="x", values=[0, 1])
+    varis['y'] = variable.Variable(name="y", values=['a', 'b'])
+    varis['z'] = variable.Variable(name="z", values=['a', 'b', 'c'])
+
+    cpms = {}
+    cpms['x'] = cpm.Cpm(variables=[varis['x']], no_child=1, C=[[0],[1]], p=[0.5, 0.5])
+    cpms['y'] = cpm.Cpm(variables=[varis['y']], no_child=1, C=[[0],[1]], p=[0.1, 0.9])
+    cpms['z'] = cpm.Cpm(variables=[varis['z'], varis['x'], varis['y']], no_child=1, C=[[0, 0, 0],[1, 0, 0],[2, 0, 0],
+                                                                                    [0, 1, 0],[1, 1, 0],[2, 1, 0],
+                                                                                    [0, 0, 1],[1, 0, 1],[2, 0, 1],
+                                                                                    [0, 1, 1],[1, 1, 1],[2, 1, 1]],
+                                                                                    p = [0.1, 0.2, 0.7, 0.2, 0.3, 0.5, 0.3, 0.4, 0.3, 0.7, 0.2, 0.1])
+
+    sobol_indices = inference.cal_first_order_sobol(cpms, [varis['x'], varis['y']], varis['z'])
+    print(sobol_indices)
+
+   **Output:**
+
+   ::
+
+      [0.124, 0.0774]

@@ -62,6 +62,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#get-elimination-order">get_elimination_order</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-inf-vars">get_inf_vars</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#prod-msys-and-mcomps">prod_Msys_and_Mcomps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cal-first-order-sobol">cal_first_order_sobol</a></li>
 </ul>
 </li>
 </ul>
@@ -410,6 +411,61 @@
 </pre></div>
 </div>
 </div></blockquote>
+</dd></dl>
+
+</section>
+<section id="cal-first-order-sobol">
+<h3>cal_first_order_sobol<a class="headerlink" href="#cal-first-order-sobol" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">cal_first_order_sobol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cpms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elim_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate the first-order Sobol indices for a given target variable based on the provided conditional probability models (CPMs) and input variables.</p>
+<p>The calculation is performed by variable elimination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cpms</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="cpm.html#Cpm" title="Cpm"><em>Cpm</em></a><em>] or </em><em>list</em><em>[</em><a class="reference internal" href="cpm.html#Cpm" title="Cpm"><em>Cpm</em></a><em>]</em>) – list or dictionary of CPMs.</p></li>
+<li><p><strong>input_vars</strong> (<em>list</em><em>[</em><em>str</em><em> | </em><em>Variable</em><em>] or </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Variable</em><em>]</em>) – Input variables (as names or <code class="docutils literal notranslate"><span class="pre">Variable</span></code> objects).</p></li>
+<li><p><strong>target_var</strong> (<em>str</em><em> or </em><em>Variable</em>) – The target variable of interest.</p></li>
+<li><p><strong>elim_order</strong> (<em>list</em><em>[</em><em>str</em><em> | </em><em>Variable</em><em>]</em><em>, </em><em>optional</em>) – Optional elimination order of variables.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>First-order Sobol indices for the input variables.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – If inputs are of incorrect types.</p></li>
+<li><p><strong>ValueError</strong> – If a specified variable is not found in the CPMs.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">varis</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">varis</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">])</span>
+<span class="n">varis</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">])</span>
+
+<span class="n">cpms</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpm</span><span class="o">.</span><span class="n">Cpm</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]],</span> <span class="n">no_child</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpm</span><span class="o">.</span><span class="n">Cpm</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]],</span> <span class="n">no_child</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">])</span>
+<span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpm</span><span class="o">.</span><span class="n">Cpm</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]],</span> <span class="n">no_child</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                                                                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                                                                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                                                                                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
+                                                                                <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
+
+<span class="n">sobol_indices</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">cal_first_order_sobol</span><span class="p">(</span><span class="n">cpms</span><span class="p">,</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sobol_indices</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">0.124</span><span class="p">,</span> <span class="mf">0.0774</span><span class="p">]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
