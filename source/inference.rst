@@ -168,10 +168,10 @@ get_inf_vars
 
     :param cpms: List or dictionary of CPMs.
     :type cpms: list or dict of Cpm
-    :param varis: A list of variable names or a single variable name whose marginal distributions are of interest.
-    :type varis: A list of str or str
-    :param ve_ord: variable names in the order of elimination. If provided, the function returns the variables in the given order.
-    :type ve_ord: list of str
+    :param varis: A list of variable names or Variable objects or a single variable name or Variable object whose marginal distributions are of interest.
+    :type varis: A list of str/Variable object or str/Variable object
+    :param ve_ord: variable names or Variable objects in the order of elimination. If provided, the function returns the variables in the given order.
+    :type ve_ord: list of str/Variable object
     :return: List of variable names in the scope of the given variables.
     :rtype: list of str
 
