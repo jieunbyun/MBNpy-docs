@@ -130,6 +130,34 @@ variable_elim
     
     The CPM represents :math:`P(X_3) = \sum_{X_2} P(X_2) \cdot \sum_{X_1} P(X_3| X_1, X_2) \cdot P(X_1)`.
 
+get_elimination_order
+~~~~~~~~~~~~~~~~~~~~~
+
+.. py:method:: inference.get_elimination_order(cpms)
+   :noindex:
+
+    Get the ancestry order of variables for the given cpms. The ordering priorities are (i) ancestors first, (ii) fewest parents first.
+
+    :param cpms: List or dictionary of CPMs.
+    :type cpms: list or dict of Cpm
+    :return: List of Variable objects in the order of elimination.
+    :rtype: list of Variable
+
+    **Example:**
+
+    .. code-block:: python
+
+        ve_order = inference.get_elimination_order(cpms)
+        print([v.name for v in ve_order])
+
+    **Output:**
+
+    ::
+
+        ['x1', 'x2', 'x3']
+    
+    The output indicates that 'x1' and 'x2' should be eliminated before 'x3'.
+
 get_inf_vars
 ~~~~~~~~~~~~
 
