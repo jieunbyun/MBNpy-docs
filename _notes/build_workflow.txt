@@ -1,0 +1,13 @@
+After updating,
+1. Build the HTML:
+    sphinx-build -b html source build/html
+
+2. Check output
+    start build/html/index.html  # Windows
+    open build/html/index.html   # macOS
+    xdg-open build/html/index.html  # Linux
+
+3. Commit to GitHub.
+    git add -f .
+    git commit -m "<Update blog>"
+    git push origin
