@@ -71,6 +71,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#product-2">product (2)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-means">get_means</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-variances">get_variances</a></li>
 </ul>
 </li>
 </ul>
@@ -491,6 +492,43 @@ One can perform <span class="math notranslate nohighlight">\(P(X_3|X_1,X_2) \cdo
 </div>
 <p>If a variable is non-numeric, the mean is computed based on its encoded index values (e.g. 0 or 1).</p>
 <p>If the variable has numeric values (e.g. [0.0, 2.0]), the true expected value is calculated as a weighted sum.</p>
+</dd></dl>
+
+</section>
+<section id="get-variances">
+<h3>get_variances<a class="headerlink" href="#get-variances" title="Link to this heading"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">Cpm.</span></span><span class="sig-name descname"><span class="pre">get_variances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Get variances of the specified variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>names</strong> (<em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>list</em><em>[</em><em>Variable</em><em>]</em>) – A list of variable names (as strings or <code class="docutils literal notranslate"><span class="pre">Variable</span></code> objects).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of variances corresponding to the given variable names, in order.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>AssertionError</strong> – If <code class="docutils literal notranslate"><span class="pre">names</span></code> is not a list or contains duplicates.</p></li>
+<li><p><strong>TypeError</strong> – If an element in <code class="docutils literal notranslate"><span class="pre">names</span></code> is not a <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">Variable</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">variances</span> <span class="o">=</span> <span class="n">cpm</span><span class="o">.</span><span class="n">get_variances</span><span class="p">([</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">])</span> <span class="c1"># the same as the example above</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">variances</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  [0.21, 0.96]
+
+The same rules apply as in ``get_means`` for non-numeric variables.
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

@@ -337,5 +337,36 @@ get_means
         [0.7, 1.2]
 
     If a variable is non-numeric, the mean is computed based on its encoded index values (e.g. 0 or 1).
-    
+
     If the variable has numeric values (e.g. [0.0, 2.0]), the true expected value is calculated as a weighted sum.
+
+get_variances
+~~~~~~~~~~~~~
+
+.. py:method:: Cpm.get_variances(names)
+   :noindex:
+
+   Get variances of the specified variables.
+
+   :param names: A list of variable names (as strings or ``Variable`` objects).
+   :type names: list[str] | list[Variable]
+   :return: A list of variances corresponding to the given variable names, in order.
+   :rtype: list[float]
+
+   :raises AssertionError: If ``names`` is not a list or contains duplicates.
+   :raises TypeError: If an element in ``names`` is not a ``str`` or ``Variable``.
+
+   **Example:**
+
+   .. code-block:: python
+
+      variances = cpm.get_variances(['x1', 'x2']) # the same as the example above
+      print(variances)
+
+   **Output:**
+
+   ::
+
+      [0.21, 0.96]
+
+    The same rules apply as in ``get_means`` for non-numeric variables.
