@@ -308,14 +308,14 @@ product (2)
 get_means
 ~~~~~~~~~~
 
-.. py:method:: Cpm.get_means(self, names)
-   :noindex:
+.. py:method:: cpm.get_means(self, names)
+    :noindex:
 
     Compute the expected (mean) values of the specified variables under the CPM’s probability distribution.
 
     :param names: A list of variable names or ``Variable`` objects to compute the means for.
     :type names: list
-    :return: A list of mean values corresponding to the input variables (in the same order).
+    :return: A list of mean values (float) corresponding to the input variables (in the same order).
     :rtype: list
 
     **Example:**
@@ -334,7 +334,8 @@ get_means
 
     ::
 
-        [0.42, 1.68]
+        [0.7, 1.2]
 
     If a variable is non-numeric, the mean is computed based on its encoded index values (e.g. 0 or 1).
+    
     If the variable has numeric values (e.g. [0.0, 2.0]), the true expected value is calculated as a weighted sum.

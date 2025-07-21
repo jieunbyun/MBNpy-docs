@@ -70,6 +70,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#product-2">product (2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-means">get_means</a></li>
 </ul>
 </li>
 </ul>
@@ -454,6 +455,42 @@ One can perform <span class="math notranslate nohighlight">\(P(X_3|X_1,X_2) \cdo
     <span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+</section>
+<section id="get-means">
+<h3>get_means<a class="headerlink" href="#get-means" title="Link to this heading"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">cpm.</span></span><span class="sig-name descname"><span class="pre">get_means</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Compute the expected (mean) values of the specified variables under the CPM’s probability distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>names</strong> (<em>list</em>) – A list of variable names or <code class="docutils literal notranslate"><span class="pre">Variable</span></code> objects to compute the means for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of mean values (float) corresponding to the input variables (in the same order).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">varis</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;x1&#39;</span><span class="p">:</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;fail&#39;</span><span class="p">,</span> <span class="s1">&#39;surv&#39;</span><span class="p">]),</span>
+    <span class="s1">&#39;x2&#39;</span><span class="p">:</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span>
+<span class="p">}</span>
+<span class="n">M1</span> <span class="o">=</span> <span class="n">cpm</span><span class="o">.</span><span class="n">Cpm</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">],</span> <span class="n">no_child</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<span class="n">means</span> <span class="o">=</span> <span class="n">M1</span><span class="o">.</span><span class="n">get_means</span><span class="p">([</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>If a variable is non-numeric, the mean is computed based on its encoded index values (e.g. 0 or 1).</p>
+<p>If the variable has numeric values (e.g. [0.0, 2.0]), the true expected value is calculated as a weighted sum.</p>
 </dd></dl>
 
 </section>
