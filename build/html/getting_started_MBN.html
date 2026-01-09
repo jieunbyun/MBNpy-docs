@@ -52,7 +52,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#example-problem">Example Problem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#objectives">Objectives</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#defining-variables-in-mbnpy">Defining Variables in MBNpy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#defining-probability-distributions">Defining Probability Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-probability-distributions">Defining Probability Distributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#notes-on-the-branch-and-bound-methods-and-building-cpms">Notes on the branch-and-bound methods and building CPMs</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#system-analysis">System Analysis</a></li>
 </ul>
 </li>
@@ -220,7 +223,7 @@ pip<span class="w"> </span>install<span class="w"> </span>.
 </div>
 <p>The <strong>system</strong> (<span class="math notranslate nohighlight">\(X_9\)</span>) <strong>is defined using the branch-and-bound method</strong>:</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="_images/rbd_bnb.jpg"><img alt="_images/rbd_bnb.jpg" src="_images/rbd_bnb.jpg" style="width: 400px;" />
+<a class="reference internal image-reference" href="_images/rbd_bnb.png"><img alt="_images/rbd_bnb.png" src="_images/rbd_bnb.png" style="width: 100%;" />
 </a>
 </figure>
 <p>The <code class="docutils literal notranslate"><span class="pre">Csys</span></code> and <code class="docutils literal notranslate"><span class="pre">psys</span></code> matrices are constructed:</p>
@@ -246,6 +249,23 @@ pip<span class="w"> </span>install<span class="w"> </span>.
 <span class="p">)</span>
 </pre></div>
 </div>
+<section id="notes-on-the-branch-and-bound-methods-and-building-cpms">
+<h3>Notes on the branch-and-bound methods and building CPMs<a class="headerlink" href="#notes-on-the-branch-and-bound-methods-and-building-cpms" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Each branch forms a row in the CPM for <span class="math notranslate nohighlight">\(P(X_9|X_1, \ldots, X_8)\)</span>, where the nine branches lead to the nine rows in <code class="docutils literal notranslate"><span class="pre">Csys</span></code> and <code class="docutils literal notranslate"><span class="pre">psys</span></code>.</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">Csys</span></code>’s first row represents the top branch:
+<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">0]</span></code> indicates that if <span class="math notranslate nohighlight">\(X_8=0\)</span>, then <span class="math notranslate nohighlight">\(X_9=0\)</span>.
+The probabilistic relation <span class="math notranslate nohighlight">\(P(X_9=0|X_8=0) = 1\)</span> is represented in <code class="docutils literal notranslate"><span class="pre">psys</span></code> as <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
+</li>
+<li><p>For deterministic systems whose state is fully determined by their components’ states (which is the case here), the probability vector <code class="docutils literal notranslate"><span class="pre">p</span></code> contains only <code class="docutils literal notranslate"><span class="pre">1.0</span></code> values.</p></li>
+<li><p>The <strong>composite</strong> state <code class="docutils literal notranslate"><span class="pre">2</span></code> in the event matrix <code class="docutils literal notranslate"><span class="pre">C</span></code> denotes a “don’t care” condition (i.e. it can represent the state of either <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">1</span></code>), meaning that the corresponding component’s state does not affect the outcome.
+For example, in the first row of <code class="docutils literal notranslate"><span class="pre">Csys</span></code>, all components except <span class="math notranslate nohighlight">\(X_8\)</span> are marked as <code class="docutils literal notranslate"><span class="pre">2</span></code>, indicating that their states do not influence the system state when <span class="math notranslate nohighlight">\(X_8=0\)</span>.</p></li>
+<li><p>The most important constraint when building a CPM is that the rows in the event matrix <code class="docutils literal notranslate"><span class="pre">C</span></code> must be <strong>mutually exclusive</strong> so that no instances are double-counted. The branch-and-bound method ensures this condition is met.
+For example, since the first row of <code class="docutils literal notranslate"><span class="pre">Csys</span></code> already accounts for all cases where <span class="math notranslate nohighlight">\(X_8=0\)</span>, the second row only needs to consider cases where <span class="math notranslate nohighlight">\(X_8=1\)</span>.</p></li>
+<li><p>For general systems, manual construction of branch-and-bound trees is often infeasible.
+In such cases, <a class="reference external" href="https://jieunbyun.github.io/MBNpy-docs/getting_started_BRC">the BRC algorithm</a> can be used to automatically build a branch-and-bound tree and thereby construct the CPM.</p></li>
+</ul>
+</section>
 </section>
 <hr class="docutils" />
 <section id="system-analysis">

@@ -151,8 +151,8 @@ This process is repeated for all components:
 
 The **system** (:math:`X_9`) **is defined using the branch-and-bound method**:
 
-.. figure:: _static/img/rbd_ex/rbd_bnb.jpg
-   :width: 400px
+.. figure:: _static/img/rbd_ex/rbd_bnb.png
+   :width: 100%
    :align: center
 
 The ``Csys`` and ``psys`` matrices are constructed:
@@ -179,6 +179,22 @@ The ``Csys`` and ``psys`` matrices are constructed:
        C=Csys,
        p=psys
    )
+
+Notes on the branch-and-bound methods and building CPMs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- Each branch forms a row in the CPM for :math:`P(X_9|X_1, \ldots, X_8)`, where the nine branches lead to the nine rows in ``Csys`` and ``psys``.
+
+  For example, ``Csys``'s first row represents the top branch:
+  ``[0, 2, 2, 2, 2, 2, 2, 2, 0]`` indicates that if :math:`X_8=0`, then :math:`X_9=0`.
+  The probabilistic relation :math:`P(X_9=0|X_8=0) = 1` is represented in ``psys`` as ``1.0``.
+- For deterministic systems whose state is fully determined by their components' states (which is the case here), the probability vector ``p`` contains only ``1.0`` values.
+- The **composite** state ``2`` in the event matrix ``C`` denotes a "don't care" condition (i.e. it can represent the state of either ``0`` or ``1``), meaning that the corresponding component's state does not affect the outcome.
+  For example, in the first row of ``Csys``, all components except :math:`X_8` are marked as ``2``, indicating that their states do not influence the system state when :math:`X_8=0`.
+- The most important constraint when building a CPM is that the rows in the event matrix ``C`` must be **mutually exclusive** so that no instances are double-counted. The branch-and-bound method ensures this condition is met.
+  For example, since the first row of ``Csys`` already accounts for all cases where :math:`X_8=0`, the second row only needs to consider cases where :math:`X_8=1`.
+- For general systems, manual construction of branch-and-bound trees is often infeasible. 
+  In such cases, `the BRC algorithm <https://jieunbyun.github.io/MBNpy-docs/getting_started_BRC>`_ can be used to automatically build a branch-and-bound tree and thereby construct the CPM.
+
 
 ---------------------------------
 
