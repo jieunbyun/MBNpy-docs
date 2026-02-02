@@ -9,7 +9,7 @@ Methods
 run
 ~~~~
 
-.. py:method:: run(probs, sys_fun, rules=None, brs=None, max_sf=np.inf, max_nb=np.inf, pf_bnd_wr=0.0, max_rules=100, surv_first=True, active_decomp=10, final_decomp=True, display_freq=10)
+.. py:method:: run(probs, sys_fun, rules=None, brs=None, max_sf=np.inf, max_nb=np.inf, max_memory_gb=np.inf, pf_bnd_wr=0.0, max_rules=100, surv_first=True, active_decomp=10, final_decomp=True, display_freq=10)
    :noindex:
 
     Run the BRC algorithm. There are only two mandatory inputs: component probabilities and system function. 
@@ -26,6 +26,8 @@ run
     :type max_sf: int
     :param max_nb: Maximum number of branches.
     :type max_nb: int
+    :param max_memory_gb: Maximum residence set memory usage in GB.
+    :type max_memory_gb: float
     :param pf_bnd_wr: Bound on the probability ratio of unknown branches to failure branches for early termination.
     :type pf_bnd_wr: float
     :param max_rules: Maximum number of rules to generate.
