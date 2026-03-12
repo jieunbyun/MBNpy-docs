@@ -155,7 +155,7 @@ The **system** (:math:`X_9`) **is defined using the branch-and-bound method**:
    :width: 100%
    :align: center
 
-The ``Csys`` and ``psys`` matrices are constructed:
+The ``Csys`` and ``psys`` matrices are constructed (for more information about building C matrices, see `composite state tutorial <https://jieunbyun.github.io/MBNpy-docs/composite_states>_`):
 
 .. code-block:: python
 

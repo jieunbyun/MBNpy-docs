@@ -264,6 +264,8 @@ Each branch becomes a row in the system event matrix. Since the system function 
    |     0 [    0 |    1 |    0 |    2 |    0 ]   1 |
    +-------+------+------+------+------+------+-----+
 
+For more information about building C matrices, see `composite state tutorial <https://jieunbyun.github.io/MBNpy-docs/composite_states>_`.
+
 Computing System Probability
 -----------------------------
 
