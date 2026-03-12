@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Getting Started with MBNpy &mdash; MBNpy 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css" />
 
   
@@ -18,7 +18,8 @@
       <script src="_static/documentation_options.js?v=01f34227"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -60,6 +61,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started_BRC.html">Getting Started with the BRC Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="composite_states.html">Composite States and the C Matrix</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
 <ul>
@@ -254,16 +256,19 @@ pip<span class="w"> </span>install<span class="w"> </span>.
 <ul>
 <li><p>Each branch forms a row in the CPM for <span class="math notranslate nohighlight">\(P(X_9|X_1, \ldots, X_8)\)</span>, where the nine branches lead to the nine rows in <code class="docutils literal notranslate"><span class="pre">Csys</span></code> and <code class="docutils literal notranslate"><span class="pre">psys</span></code>.</p>
 <p>For example, <code class="docutils literal notranslate"><span class="pre">Csys</span></code>’s first row represents the top branch:
-<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">0]</span></code> indicates that if <span class="math notranslate nohighlight">\(X_8=0\)</span>, then <span class="math notranslate nohighlight">\(X_9=0\)</span>.
-The probabilistic relation <span class="math notranslate nohighlight">\(P(X_9=0|X_8=0) = 1\)</span> is represented in <code class="docutils literal notranslate"><span class="pre">psys</span></code> as <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">0]</span></code> indicates that if <span class="math notranslate nohighlight">\(X_8=0\)</span>, then <span class="math notranslate nohighlight">\(X_9=0\)</span>.</p>
+<p>The probabilistic relation <span class="math notranslate nohighlight">\(P(X_9=0|X_8=0) = 1\)</span> is represented in <code class="docutils literal notranslate"><span class="pre">psys</span></code> as <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
 </li>
 <li><p>For deterministic systems whose state is fully determined by their components’ states (which is the case here), the probability vector <code class="docutils literal notranslate"><span class="pre">p</span></code> contains only <code class="docutils literal notranslate"><span class="pre">1.0</span></code> values.</p></li>
-<li><p>The <strong>composite</strong> state <code class="docutils literal notranslate"><span class="pre">2</span></code> in the event matrix <code class="docutils literal notranslate"><span class="pre">C</span></code> denotes a “don’t care” condition (i.e. it can represent the state of either <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">1</span></code>), meaning that the corresponding component’s state does not affect the outcome.
-For example, in the first row of <code class="docutils literal notranslate"><span class="pre">Csys</span></code>, all components except <span class="math notranslate nohighlight">\(X_8\)</span> are marked as <code class="docutils literal notranslate"><span class="pre">2</span></code>, indicating that their states do not influence the system state when <span class="math notranslate nohighlight">\(X_8=0\)</span>.</p></li>
-<li><p>The most important constraint when building a CPM is that the rows in the event matrix <code class="docutils literal notranslate"><span class="pre">C</span></code> must be <strong>mutually exclusive</strong> so that no instances are double-counted. The branch-and-bound method ensures this condition is met.
-For example, since the first row of <code class="docutils literal notranslate"><span class="pre">Csys</span></code> already accounts for all cases where <span class="math notranslate nohighlight">\(X_8=0\)</span>, the second row only needs to consider cases where <span class="math notranslate nohighlight">\(X_8=1\)</span>.</p></li>
-<li><p>For general systems, manual construction of branch-and-bound trees is often infeasible.
-In such cases, <a class="reference external" href="https://jieunbyun.github.io/MBNpy-docs/getting_started_BRC">the BRC algorithm</a> can be used to automatically build a branch-and-bound tree and thereby construct the CPM.</p></li>
+<li><p>The <strong>composite</strong> state <code class="docutils literal notranslate"><span class="pre">2</span></code> in the event matrix <code class="docutils literal notranslate"><span class="pre">C</span></code> denotes a “don’t care” condition (i.e. it can represent the state of either <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">1</span></code>), meaning that the corresponding component’s state does not affect the outcome.</p>
+<p>For example, in the first row of <code class="docutils literal notranslate"><span class="pre">Csys</span></code>, all components except <span class="math notranslate nohighlight">\(X_8\)</span> are marked as <code class="docutils literal notranslate"><span class="pre">2</span></code>, indicating that their states do not influence the system state when <span class="math notranslate nohighlight">\(X_8=0\)</span>.</p>
+</li>
+<li><p>The most important constraint when building a CPM is that the rows in the event matrix <code class="docutils literal notranslate"><span class="pre">C</span></code> must be <strong>mutually exclusive</strong> so that no instances are double-counted. The branch-and-bound method ensures this condition is met.</p>
+<p>For example, since the first row of <code class="docutils literal notranslate"><span class="pre">Csys</span></code> already accounts for all cases where <span class="math notranslate nohighlight">\(X_8=0\)</span>, the second row only needs to consider cases where <span class="math notranslate nohighlight">\(X_8=1\)</span>.</p>
+</li>
+<li><p>For general systems, manual construction of branch-and-bound trees often becomes infeasible.</p>
+<p>In such cases, <a class="reference external" href="https://jieunbyun.github.io/MBNpy-docs/getting_started_BRC">the BRC algorithm</a> can be used to automatically build a branch-and-bound tree and thereby construct the CPM.</p>
+</li>
 </ul>
 </section>
 </section>
@@ -271,22 +276,37 @@ In such cases, <a class="reference external" href="https://jieunbyun.github.io/M
 <section id="system-analysis">
 <h2>System Analysis<a class="headerlink" href="#system-analysis" title="Link to this heading"></a></h2>
 <p>Variable elimination is applied to compute the system failure probability. To determine the probability distribution of the system event, all component variables except for <span class="math notranslate nohighlight">\(X_9\)</span> are eliminated.</p>
+<p>Note that the second argument of the <code class="docutils literal notranslate"><span class="pre">variable_elim</span></code> function is a list of variables to eliminate, in the order they should be eliminated.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mbnpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">inference</span>
 
+<span class="c1"># Compute P(X_9) by eliminating all component variables</span>
 <span class="n">cpm_sys</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">variable_elim</span><span class="p">(</span>
-    <span class="n">cpms</span><span class="p">,</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;x</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)]</span>
+    <span class="n">cpms</span> <span class="o">=</span> <span class="n">cpms</span><span class="p">,</span> <span class="n">var_elim</span> <span class="o">=</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x4&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x5&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x6&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x7&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x8&#39;</span><span class="p">]]</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;System failure probability: </span><span class="si">{</span><span class="n">cpm_sys</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1"># Get probability P(X_9=0) from the resulting CPM</span>
+<span class="n">prob_s0</span> <span class="o">=</span> <span class="n">cpm_sys</span><span class="o">.</span><span class="n">get_prob</span><span class="p">([</span><span class="s1">&#39;x9&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;System failure probability P(X9=0): </span><span class="si">{</span><span class="n">prob_s0</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Component importance measures are calculated, following <a class="reference external" href="https://doi.org/10.1016/j.ress.2008.02.011">Kang et al. (2008)</a>’s definition <span class="math notranslate nohighlight">\(CIM_i = P(X_i=0|X_9=0) = P(X_i=0,X_9=0) / P(X_9=0)\)</span>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CIMs</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_comp</span><span class="p">):</span>
-    <span class="n">varis_elim</span> <span class="o">=</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;x</span><span class="si">{</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_comp</span><span class="p">)</span> <span class="k">if</span> <span class="n">j</span> <span class="o">!=</span> <span class="n">i</span><span class="p">]</span>
-    <span class="n">cpm_sys_xi</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">variable_elim</span><span class="p">(</span><span class="n">cpms</span><span class="p">,</span> <span class="n">varis_elim</span><span class="p">)</span>
+
+    <span class="c1"># Current component of interest</span>
+    <span class="n">var_i</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;x</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="c1"># Variables to eliminate: all except the component of interest and the system variable</span>
+    <span class="n">varis_elim</span> <span class="o">=</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x3&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x4&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x5&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x6&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x7&#39;</span><span class="p">],</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;x8&#39;</span><span class="p">]]</span>
+    <span class="n">varis_elim</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">varis</span><span class="p">[</span><span class="n">var_i</span><span class="p">])</span>
+
+    <span class="c1"># Compute P(X_i, X_9)</span>
+    <span class="n">cpm_sys_xi</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">variable_elim</span><span class="p">(</span><span class="n">cpms</span> <span class="o">=</span> <span class="n">cpms</span><span class="p">,</span> <span class="n">var_elim</span> <span class="o">=</span> <span class="n">varis_elim</span><span class="p">)</span>
+    <span class="c1"># Get probability P(X_i=0, X_9=0) from the resulting CPM</span>
     <span class="n">prob_s0_x0</span> <span class="o">=</span> <span class="n">cpm_sys_xi</span><span class="o">.</span><span class="n">get_prob</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;x</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;x9&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">CIMs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;x</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prob_s0_x0</span> <span class="o">/</span> <span class="n">cpm_sys</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Compute CIM_i = P(X_i=0|X_9=0) = P(X_i=0, X_9=0) / P(X_9=0)</span>
+    <span class="n">CIMs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;x</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prob_s0_x0</span> <span class="o">/</span> <span class="n">prob_s0</span> <span class="c1"># prob_s0 represents P(X_9=0), from the previous computation</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">CIMs</span><span class="p">)</span>
 </pre></div>

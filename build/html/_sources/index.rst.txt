@@ -11,6 +11,7 @@ MBN enables applying Bayesian network for **large-scale systems** (i.e. high-dim
 
    getting_started_MBN
    getting_started_BRC
+   composite_states
 
 .. toctree::
    :maxdepth: 1

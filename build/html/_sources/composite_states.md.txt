@@ -127,6 +127,7 @@ The correct 5-row encoding avoids overlap by structuring the rows as a **branch-
 ```
 
 Each branch in the tree corresponds directly to a row in the compressed C matrix:
+
 1. **$X_1 \xrightarrow{0} S = 0$** — The leftmost branch: $X_1$ fails, so the system fails regardless of the remaining components. Because $X_2, X_3, X_4$ are never examined on this branch, they get composite state 2 (any state) → **Row 1:** `[0  0  2  2  2]`, covering 8 combinations.
 2. **$X_1 \xrightarrow{1} X_2 \xrightarrow{0} S = 0$** — $X_1$ survives, but $X_2$ fails. $X_3$ and $X_4$ are unexamined → **Row 2:** `[0  1  0  2  2]`, covering 4 combinations.
 3. **$X_1 \xrightarrow{1} X_2 \xrightarrow{1} X_3 \xrightarrow{0} S = 0$** — $X_1$ and $X_2$ survive, $X_3$ fails. $X_4$ is unexamined → **Row 3:** `[0  1  1  0  2]`, covering 2 combinations.

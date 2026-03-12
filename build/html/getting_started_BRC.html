@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Getting Started with the BRC Algorithm &mdash; MBNpy 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css" />
 
   
@@ -18,11 +18,12 @@
       <script src="_static/documentation_options.js?v=01f34227"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="variable" href="variable.html" />
+    <link rel="next" title="Composite States and the C Matrix" href="composite_states.html" />
     <link rel="prev" title="Getting Started with MBNpy" href="getting_started_MBN.html" /> 
 </head>
 
@@ -66,9 +67,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#extracting-system-rules">Extracting System Rules</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-probability-distributions">Setting Up Probability Distributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#computing-system-probability">Computing System Probability</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#computing-component-importance-measure">Computing Component Importance Measure</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="composite_states.html">Composite States and the C Matrix</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
 <ul>
@@ -107,18 +113,18 @@
 <h1>Getting Started with the BRC Algorithm<a class="headerlink" href="#getting-started-with-the-brc-algorithm" title="Link to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <strong>Branch and Bound Algorithm for Reliability of Coherent Systems</strong> (<strong>BRC</strong>) is an efficient method for analysing <strong>system reliability with discrete-state component events and a binary-state system event.</strong> It identifies (sub-)minimal survival and failure rules while computing system failure probability using a branch-and-bound approach.</p>
+<p>The <strong>Branch and Bound Algorithm for Reliability of Coherent Systems</strong> (<strong>BRC</strong>) is an efficient method for analysing <strong>system reliability with discrete-state component events and a binary-state system event.</strong> It identifies (sub-)minimal survival and failure rules while computing system failure probability using a branch-and-bound approach. Official publication is available at <a class="reference external" href="https://arxiv.org/abs/2410.22363">arXiv</a>.</p>
 </div>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
 <p>The BRC algorithm identifies (sub-)minimal survival and failure rules and computes the system failure probability using a branch-and-bound approach.</p>
 <p>BRC applies to <strong>any general coherent system</strong>, meaning systems where an improvement in component states never leads to a worse system state.</p>
 <p>The figure below illustrates the BRC process (or more details, refer to the official publication on <a class="reference external" href="https://arxiv.org/abs/2410.22363">arXiv</a>):</p>
-<figure class="align-center" id="id1">
+<figure class="align-center" id="id2">
 <a class="reference internal image-reference" href="_images/brc.png"><img alt="BRC Algorithm" src="_images/brc.png" style="width: 800px;" />
 </a>
 <figcaption>
-<p><span class="caption-text"><strong>Illustration of the BRC algorithm.</strong></span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+<p><span class="caption-text"><strong>Illustration of the BRC algorithm.</strong></span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
@@ -173,11 +179,11 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<figure class="align-center" id="id2">
+<figure class="align-center" id="id3">
 <a class="reference internal image-reference" href="_images/network.png"><img alt="Network Topology" src="_images/network.png" style="width: 500px;" />
 </a>
 <figcaption>
-<p><span class="caption-text"><strong>Network topology with five edges.</strong></span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+<p><span class="caption-text"><strong>Network topology with five edges.</strong></span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
@@ -215,19 +221,32 @@
 </div></blockquote>
 <p>The function is implemented as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">net_conn</span><span class="p">(</span><span class="n">comps_st</span><span class="p">,</span> <span class="n">od_pair</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">varis</span><span class="p">):</span>
+
+    <span class="c1"># Build a graph with edge capacities based on component states</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">comps_st</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">G</span><span class="p">[</span><span class="n">edges</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]][</span><span class="n">edges</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">]][</span><span class="s1">&#39;capacity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">varis</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">comps_st</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">edge_k</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">origin_k</span><span class="p">,</span> <span class="n">dest_k</span> <span class="o">=</span> <span class="n">edge_k</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge_k</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="c1"># Perform max-flow analysis</span>
-    <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">od_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;new_d&#39;</span><span class="p">,</span> <span class="n">capacity</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">f_val</span><span class="p">,</span> <span class="n">f_dict</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">maximum_flow</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">od_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;new_d&#39;</span><span class="p">)</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">origin_k</span><span class="p">,</span> <span class="n">dest_k</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">f_val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">f_val</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">f_val</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="c1"># Set capacity</span>
+        <span class="n">capa_k</span> <span class="o">=</span> <span class="n">varis</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">st</span><span class="p">]</span>  <span class="c1"># 1 for functional, 0 for non-functional</span>
+        <span class="n">G</span><span class="p">[</span><span class="n">origin_k</span><span class="p">][</span><span class="n">dest_k</span><span class="p">][</span><span class="s1">&#39;capacity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">capa_k</span>
+
+    <span class="c1"># To check whether od_pair is connected, as well as the path between them, we add a new edge from destination to a new dummy node with capacity 1 and check if the maximum flow is greater than 0.</span>
+    <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">od_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;new_d&#39;</span><span class="p">,</span> <span class="n">capacity</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># add a dummy edge</span>
+    <span class="n">f_val</span><span class="p">,</span> <span class="n">f_dict</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">maximum_flow</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">od_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;new_d&#39;</span><span class="p">)</span> <span class="c1"># compute maximum flow from origin to dummy node</span>
+
+    <span class="c1"># Determine the system state and the minimum component state that guarantees the system state</span>
+    <span class="k">if</span> <span class="n">f_val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># system survival</span>
+        <span class="n">sys_st</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span>
+        <span class="n">min_comp_st</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}</span>  <span class="c1"># components with flow &gt; 0 need to be functional for system survival</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># system failure</span>
+         <span class="n">sys_st</span> <span class="o">=</span> <span class="s1">&#39;f&#39;</span>
+         <span class="n">min_comp_st</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># since it is more complex to determine the minimum component state for system failure, we return None for simplicity</span>
+
+    <span class="k">return</span> <span class="n">f_val</span><span class="p">,</span> <span class="n">sys_st</span><span class="p">,</span> <span class="n">min_comp_st</span> <span class="c1"># f_val is returned only for informational purposes, and is not used by BRC.</span>
 </pre></div>
 </div>
 <p>The OD pair is set to <cite>(‘n1’, ‘n4’)</cite>:</p>
@@ -238,10 +257,12 @@
 </section>
 <section id="running-the-brc-algorithm">
 <h2>Running the BRC Algorithm<a class="headerlink" href="#running-the-brc-algorithm" title="Link to this heading"></a></h2>
-<p>Now, we run the BRC algorithm, ensuring that the analysis <strong>is complete</strong> (<cite>pf_bnd_wr=0.0</cite>):</p>
+<p>Now, we run the BRC algorithm. By setting the target unknown probability as zero, i.e. <cite>pf_bnd_wr=0.0</cite>, the analysis terminates after identifying all survival and failure rules:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">brs</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">sys_res</span><span class="p">,</span> <span class="n">monitor</span> <span class="o">=</span> <span class="n">brc</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">sys_fun</span><span class="p">,</span> <span class="n">max_sf</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">max_nb</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">pf_bnd_wr</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>When there are many rules, the algorithm can be set to terminate early by setting a positive value for <cite>pf_bnd_wr</cite>, which is the bound on the probability ratio of unknown branches to failure branches. For example, setting <cite>pf_bnd_wr=0.1</cite> terminates the analysis when the probability of unknown probability is less than 10% of that of failure probability.</p>
+<p>One can also set a maximum number of rules to generate by setting <cite>max_rules</cite>. For example, setting <cite>max_rules=200</cite> terminates the analysis when 200 rules are generated, regardless of the probability bounds. Emprically, we find BRC struggles to handle more than 200-300 rules, so setting <cite>max_rules</cite> can be useful for large systems.</p>
 <section id="brc-output">
 <h3>BRC output<a class="headerlink" href="#brc-output" title="Link to this heading"></a></h3>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>*** Analysis completed with 8 system function runs ***
@@ -252,7 +273,7 @@ Found non-dominated rules (failure: 4, survival: 4)
 </section>
 <section id="extracting-system-rules">
 <h3>Extracting System Rules<a class="headerlink" href="#extracting-system-rules" title="Link to this heading"></a></h3>
-<p>To retrieve these rules, use:</p>
+<p>We can check what rules BRC identified:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">rules</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">])</span>  <span class="c1"># Survival rules</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">rules</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">])</span>  <span class="c1"># Failure rules</span>
 </pre></div>
@@ -262,20 +283,112 @@ Found non-dominated rules (failure: 4, survival: 4)
 Failure Rules: [{&#39;e4&#39;: 0, &#39;e5&#39;: 0}, {&#39;e1&#39;: 0, &#39;e2&#39;: 0}, {&#39;e1&#39;: 0, &#39;e3&#39;: 0, &#39;e5&#39;: 0}, {&#39;e2&#39;: 0, &#39;e3&#39;: 0, &#39;e4&#39;: 0}]
 </pre></div>
 </div>
+<p>It finds four survival and four failure rules. For example, the first survival rule <cite>{‘e1’: 1, ‘e4’: 1}</cite> indicates that if edges <cite>e1</cite> and <cite>e4</cite> are functional, then the system survives regardless of the states of other edges.</p>
+</section>
+</section>
+<section id="setting-up-probability-distributions">
+<h2>Setting Up Probability Distributions<a class="headerlink" href="#setting-up-probability-distributions" title="Link to this heading"></a></h2>
+<p>BRC branches can be used to construct <strong>Conditional Probability Matrices (CPMs)</strong> for further probabilistic analysis.</p>
+<p>First, we define the system variable and build CPMs for both component and system events:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;sys&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;sys&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">])</span> <span class="c1"># state 0 for failure and 1 for survival</span>
+
+<span class="c1"># probability distributions using CPM</span>
+<span class="n">cpms</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1"># component events</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">cpms</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpm</span><span class="o">.</span><span class="n">Cpm</span><span class="p">(</span> <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="n">k</span><span class="p">]],</span> <span class="n">no_child</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">]]),</span> <span class="n">p</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">probs</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">probs</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">]])</span> <span class="p">)</span>
+
+<span class="c1"># system event</span>
+<span class="n">Csys</span> <span class="o">=</span> <span class="n">branch</span><span class="o">.</span><span class="n">get_cmat</span><span class="p">(</span><span class="n">branches</span> <span class="o">=</span> <span class="n">brs</span><span class="p">,</span> <span class="n">comp_varis</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;e1&#39;</span><span class="p">:</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">],</span> <span class="s1">&#39;e2&#39;</span><span class="p">:</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">],</span> <span class="s1">&#39;e3&#39;</span><span class="p">:</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;e3&#39;</span><span class="p">],</span> <span class="s1">&#39;e4&#39;</span><span class="p">:</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;e4&#39;</span><span class="p">],</span> <span class="s1">&#39;e5&#39;</span><span class="p">:</span> <span class="n">varis</span><span class="p">[</span><span class="s1">&#39;e5&#39;</span><span class="p">]})</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;C matrix of P(sys | e1, e2, e3, e4, e5):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Csys</span><span class="p">)</span> <span class="c1"># each branch becomes a row in the system&#39;s event matrix</span>
+<span class="n">psys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">Csys</span><span class="p">))</span> <span class="c1"># the system function is determinisitic, i.e. all instances have a probability of 1.</span>
+
+<span class="c1"># Define CPM of P(sys | e1, e2, e3, e4, e5)</span>
+<span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;sys&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpm</span><span class="o">.</span><span class="n">Cpm</span><span class="p">(</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="s1">&#39;sys&#39;</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="s1">&#39;e3&#39;</span><span class="p">,</span> <span class="s1">&#39;e4&#39;</span><span class="p">,</span> <span class="s1">&#39;e5&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Csys</span><span class="p">,</span> <span class="n">psys</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cpms</span><span class="p">[</span><span class="s1">&#39;sys&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Each branch becomes a row in the system event matrix. Since the system function is deterministic, all probabilities are set to 1:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C matrix of P(sys | e1, e2, e3, e4, e5):
+[[1 1 2 2 1 2]
+ [1 1 1 2 0 1]
+ [1 0 1 1 1 2]
+ [0 1 2 2 0 0]
+ [0 0 1 1 0 0]
+ [1 0 1 1 0 1]
+ [0 1 0 0 0 1]
+ [1 1 0 1 0 1]
+ [1 0 1 0 2 1]
+ [0 0 0 2 2 2]
+ [0 0 1 0 2 0]]
+
+&lt;CPM representing P(sys | e1, e2, e3, e4, e5)&gt;
++-------+------+------+------+------+------+-----+
+|   sys [   e1 |   e2 |   e3 |   e4 |   e5 ]   p |
++=======+======+======+======+======+======+=====+
+|     1 [    1 |    2 |    2 |    1 |    2 ]   1 |
++-------+------+------+------+------+------+-----+
+|     1 [    1 |    1 |    2 |    0 |    1 ]   1 |
++-------+------+------+------+------+------+-----+
+|     1 [    0 |    1 |    1 |    1 |    2 ]   1 |
++-------+------+------+------+------+------+-----+
+|     0 [    1 |    2 |    2 |    0 |    0 ]   1 |
++-------+------+------+------+------+------+-----+
+|   :   [  :   |  :   |  :   |  :   |  :   ]  :  |
++-------+------+------+------+------+------+-----+
+|     1 [    0 |    1 |    0 |    2 |    1 ]   1 |
++-------+------+------+------+------+------+-----+
+|     0 [    0 |    0 |    2 |    2 |    2 ]   1 |
++-------+------+------+------+------+------+-----+
+|     0 [    0 |    1 |    0 |    2 |    0 ]   1 |
++-------+------+------+------+------+------+-----+
+</pre></div>
+</div>
+<section id="computing-system-probability">
+<h3>Computing System Probability<a class="headerlink" href="#computing-system-probability" title="Link to this heading"></a></h3>
+<p>From the CPMs, the system failure probability <span class="math notranslate nohighlight">\(P(S=0)\)</span> can be obtained by <strong>variable elimination</strong> (cf. <a class="reference external" href="https://jieunbyun.github.io/MBNpy-docs/getting_started_MBN">MBNpy tutorial</a>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">var_elim_order</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="s1">&#39;e3&#39;</span><span class="p">,</span> <span class="s1">&#39;e4&#39;</span><span class="p">,</span> <span class="s1">&#39;e5&#39;</span><span class="p">]</span>
+
+<span class="n">cpm_s</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">variable_elim</span><span class="p">(</span><span class="n">cpms</span> <span class="o">=</span> <span class="n">cpms</span><span class="p">,</span> <span class="n">var_elim</span> <span class="o">=</span> <span class="n">var_elim_order</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cpm_s</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This returns:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;CPM representing P(sys | )&gt;
++-------+------------+
+|   sys [ ]          p |
++=======+============+
+|     1 [ ] 0.994831 |
++-------+------------+
+|     0 [ ] 0.005169 |
++-------+------------+
+</pre></div>
+</div>
+<p>The system failure probability is <span class="math notranslate nohighlight">\(P(S=0) = 5.17 \times 10^{-3}\)</span>, consistent with the BRC result.</p>
 </section>
 </section>
 <section id="computing-component-importance-measure">
 <h2>Computing Component Importance Measure<a class="headerlink" href="#computing-component-importance-measure" title="Link to this heading"></a></h2>
-<p><a class="reference external" href="https://doi.org/10.1016/j.ress.2008.02.011">Conditional probability-based importance measure (CPIM)</a> is calculated as:</p>
+<p>In addition, CPMs can be used to calculate any joint or conditional probability. For instance, <a class="reference external" href="https://doi.org/10.1016/j.ress.2008.02.011">Conditional probability-based importance measure (CPIM)</a> is calculated as:</p>
 <div class="math notranslate nohighlight">
 \[P(X_n=0 | S=0) = \frac{P(X_n=0, S=0)}{P(S=0)}\]</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_cim</span><span class="p">(</span><span class="n">comp_name</span><span class="p">,</span> <span class="n">cpms</span><span class="p">,</span> <span class="n">varis</span><span class="p">,</span> <span class="n">pf</span><span class="p">):</span>
-    <span class="n">var_elim_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">edges</span> <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="n">comp_name</span><span class="p">]</span>
-    <span class="n">cpm_s_x</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">variable_elim</span><span class="p">(</span><span class="n">cpms</span><span class="p">,</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">var_elim_names</span><span class="p">])</span>
-    <span class="n">p_s0_x0</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">cpm_s_x</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">cpm_s_x</span><span class="o">.</span><span class="n">C</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))])</span>
-    <span class="k">return</span> <span class="n">p_s0_x0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">pf</span>
+    <span class="c1"># Variable elimination order: Eliminate all component variables except for the component of interest and the system variable</span>
+    <span class="n">var_elim_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">varis</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">edges</span> <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="n">comp_name</span><span class="p">]</span>
 
-<span class="n">cims</span> <span class="o">=</span> <span class="p">{</span><span class="n">comp</span><span class="p">:</span> <span class="n">get_cim</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span> <span class="n">cpms</span><span class="p">,</span> <span class="n">varis</span><span class="p">,</span> <span class="mf">5.16e-3</span><span class="p">)</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">}</span>
+    <span class="c1"># Compute P(X_n, S)</span>
+    <span class="n">cpm_s_x</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">variable_elim</span><span class="p">(</span><span class="n">cpms</span><span class="p">,</span> <span class="n">var_elim_names</span><span class="p">)</span>
+
+    <span class="c1"># Get probability P(X_n=0, S=0) from the resulting CPM</span>
+    <span class="n">p_s0_x0</span> <span class="o">=</span> <span class="n">cpm_s_x</span><span class="o">.</span><span class="n">get_prob</span><span class="p">(</span><span class="n">var_inds</span> <span class="o">=</span> <span class="p">[</span><span class="n">comp_name</span><span class="p">,</span> <span class="s1">&#39;sys&#39;</span><span class="p">],</span> <span class="n">var_states</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># CPIM = P(X_n=0 | S=0) = P(X_n=0, S=0) / P(S=0)</span>
+    <span class="n">cpim</span> <span class="o">=</span> <span class="n">p_s0_x0</span> <span class="o">/</span> <span class="n">pf</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">cpim</span><span class="p">)</span>
+
+<span class="n">cims</span> <span class="o">=</span> <span class="p">{</span><span class="n">comp</span><span class="p">:</span> <span class="n">get_cim</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span> <span class="n">cpms</span><span class="p">,</span> <span class="n">varis</span><span class="p">,</span> <span class="mf">5.17e-3</span><span class="p">)</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">}</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cims</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -300,7 +413,7 @@ Failure Rules: [{&#39;e4&#39;: 0, &#39;e5&#39;: 0}, {&#39;e1&#39;: 0, &#39;e2&#3
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="getting_started_MBN.html" class="btn btn-neutral float-left" title="Getting Started with MBNpy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="variable.html" class="btn btn-neutral float-right" title="variable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="composite_states.html" class="btn btn-neutral float-right" title="Composite States and the C Matrix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

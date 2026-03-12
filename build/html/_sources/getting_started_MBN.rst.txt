@@ -186,13 +186,21 @@ Notes on the branch-and-bound methods and building CPMs
 
   For example, ``Csys``'s first row represents the top branch:
   ``[0, 2, 2, 2, 2, 2, 2, 2, 0]`` indicates that if :math:`X_8=0`, then :math:`X_9=0`.
+  
   The probabilistic relation :math:`P(X_9=0|X_8=0) = 1` is represented in ``psys`` as ``1.0``.
+
 - For deterministic systems whose state is fully determined by their components' states (which is the case here), the probability vector ``p`` contains only ``1.0`` values.
+
 - The **composite** state ``2`` in the event matrix ``C`` denotes a "don't care" condition (i.e. it can represent the state of either ``0`` or ``1``), meaning that the corresponding component's state does not affect the outcome.
+
   For example, in the first row of ``Csys``, all components except :math:`X_8` are marked as ``2``, indicating that their states do not influence the system state when :math:`X_8=0`.
+
 - The most important constraint when building a CPM is that the rows in the event matrix ``C`` must be **mutually exclusive** so that no instances are double-counted. The branch-and-bound method ensures this condition is met.
+
   For example, since the first row of ``Csys`` already accounts for all cases where :math:`X_8=0`, the second row only needs to consider cases where :math:`X_8=1`.
-- For general systems, manual construction of branch-and-bound trees is often infeasible. 
+
+- For general systems, manual construction of branch-and-bound trees often becomes infeasible. 
+
   In such cases, `the BRC algorithm <https://jieunbyun.github.io/MBNpy-docs/getting_started_BRC>`_ can be used to automatically build a branch-and-bound tree and thereby construct the CPM.
 
 
@@ -202,15 +210,20 @@ System Analysis
 ---------------
 Variable elimination is applied to compute the system failure probability. To determine the probability distribution of the system event, all component variables except for :math:`X_9` are eliminated.
 
+Note that the second argument of the ``variable_elim`` function is a list of variables to eliminate, in the order they should be eliminated.
+
 .. code-block:: python
 
    from mbnpy import inference
 
+   # Compute P(X_9) by eliminating all component variables
    cpm_sys = inference.variable_elim(
-       cpms, [varis[f'x{i+1}'] for i in range(8)]
+       cpms = cpms, var_elim = [varis['x1'], varis['x2'], varis['x3'], varis['x4'], varis['x5'], varis['x6'], varis['x7'], varis['x8']]
    )
 
-   print(f'System failure probability: {cpm_sys.p[0][0]:.2f}')
+   # Get probability P(X_9=0) from the resulting CPM
+   prob_s0 = cpm_sys.get_prob(['x9'], [0])  
+   print(f'System failure probability P(X9=0): {prob_s0:.2f}')
 
 Component importance measures are calculated, following `Kang et al. (2008) <https://doi.org/10.1016/j.ress.2008.02.011>`_'s definition :math:`CIM_i = P(X_i=0|X_9=0) = P(X_i=0,X_9=0) / P(X_9=0)`:
 
@@ -218,9 +231,20 @@ Component importance measures are calculated, following `Kang et al. (2008) <htt
 
    CIMs = {}
    for i in range(n_comp):
-       varis_elim = [varis[f'x{j+1}'] for j in range(n_comp) if j != i]
-       cpm_sys_xi = inference.variable_elim(cpms, varis_elim)
+
+       # Current component of interest
+       var_i = f'x{i+1}'
+
+       # Variables to eliminate: all except the component of interest and the system variable
+       varis_elim = [varis['x1'], varis['x2'], varis['x3'], varis['x4'], varis['x5'], varis['x6'], varis['x7'], varis['x8']]
+       varis_elim.remove(varis[var_i])  
+
+       # Compute P(X_i, X_9)
+       cpm_sys_xi = inference.variable_elim(cpms = cpms, var_elim = varis_elim) 
+       # Get probability P(X_i=0, X_9=0) from the resulting CPM
        prob_s0_x0 = cpm_sys_xi.get_prob([f'x{i+1}', 'x9'], [0,0])
-       CIMs[f'x{i+1}'] = prob_s0_x0 / cpm_sys.p[0][0]
+
+       # Compute CIM_i = P(X_i=0|X_9=0) = P(X_i=0, X_9=0) / P(X_9=0)
+       CIMs[f'x{i+1}'] = prob_s0_x0 / prob_s0 # prob_s0 represents P(X_9=0), from the previous computation
 
    print(CIMs)
