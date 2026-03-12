@@ -19,6 +19,7 @@ extensions = [
     'sphinx.ext.napoleon',    # Supports Google-style docstrings
     'sphinx.ext.viewcode',    # Adds source code links
     'sphinx.ext.githubpages', # Helps with GitHub Pages deployment
+    'myst_parser',            # Markdown support
 ]
 
 templates_path = ['_templates']
