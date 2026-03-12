@@ -1,1 +1,5 @@
-/* This file intentionally left blank. */
+.no-float {
+    float: none !important;
+    display: block;
+    clear: both;
+}

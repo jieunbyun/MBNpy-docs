@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Composite States and the C Matrix &mdash; MBNpy 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=21eab938" />
+
+  
+    <link rel="canonical" href="/MBNpy/docs/sphinx/composite_states.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="variable" href="variable.html" />
+    <link rel="prev" title="Getting Started with the BRC Algorithm" href="getting_started_BRC.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MBNpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started_MBN.html">Getting Started with MBNpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_BRC.html">Getting Started with the BRC Algorithm</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Composite States and the C Matrix</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-problem-exponential-explosion">The Problem: Exponential Explosion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-a-composite-state">What Is a Composite State?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-c-matrix">The C Matrix</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-concrete-example-series-system">A Concrete Example: Series System</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#the-brute-force-table">The brute-force table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-compressed-c-matrix-5-rows-instead-of-16">The compressed C matrix (5 rows instead of 16)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-overlap-trap">The Overlap Trap</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-fix-branch-and-bound">The fix: branch and bound</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#key-takeaways">Key Takeaways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#further-reading">Further Reading</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="variable.html">variable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cpm.html">cpm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inference.html">inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brc.html">brc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="branch.html">branch</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MBNpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Composite States and the C Matrix</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/composite_states.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="composite-states-and-the-c-matrix">
+<h1>Composite States and the C Matrix<a class="headerlink" href="#composite-states-and-the-c-matrix" title="Link to this heading"></a></h1>
+<section id="the-problem-exponential-explosion">
+<h2>The Problem: Exponential Explosion<a class="headerlink" href="#the-problem-exponential-explosion" title="Link to this heading"></a></h2>
+<p>Imagine you have a system with 20 binary components. A standard probability table — like a Bayesian network CPT — needs one row for every possible combination of states. That’s <span class="math notranslate nohighlight">\(2^{20} = 1{,}048{,}576\)</span> rows, and every new component doubles the table again.</p>
+<p>This is where <strong>composite states</strong> come in. They’re the core idea behind the <strong>matrix-based Bayesian network (MBN)</strong> framework, and they let you collapse that million-row table into something manageable — often just a handful of rows.</p>
+<blockquote>
+<div><p><strong>Reference:</strong> Byun, J.-E. and Song, J. (2021). <em>Generalized matrix-based Bayesian network for multi-state systems</em>. Reliability Engineering &amp; System Safety, 211, 107468. <a class="reference external" href="https://doi.org/10.1016/j.ress.2021.107468">https://doi.org/10.1016/j.ress.2021.107468</a></p>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="what-is-a-composite-state">
+<h2>What Is a Composite State?<a class="headerlink" href="#what-is-a-composite-state" title="Link to this heading"></a></h2>
+<p>A variable <span class="math notranslate nohighlight">\(X\)</span> with <span class="math notranslate nohighlight">\(K\)</span> states (indexed <span class="math notranslate nohighlight">\(0, 1, \ldots, K{-}1\)</span>) gets additional <strong>composite states</strong> — each one representing a <em>subset</em> of the original states bundled together.</p>
+<p>MBNpy assigns these automatically via the <strong>B matrix</strong>. Here’s what it looks like for a three-state variable:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mbnpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">variable</span>
+
+<span class="n">v</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Variable representing x[&#39;0&#39;, &#39;1&#39;, &#39;2&#39;] at 0x1fd93373770&gt;
++---------+-----------+
+|   index | B         |
++=========+===========+
+|       0 | {0}       |
++---------+-----------+
+|       1 | {1}       |
++---------+-----------+
+|       2 | {2}       |
++---------+-----------+
+|       3 | {0, 1}    |
++---------+-----------+
+|       4 | {0, 2}    |
++---------+-----------+
+|       5 | {1, 2}    |
++---------+-----------+
+|       6 | {0, 1, 2} |
++---------+-----------+
+</pre></div>
+</div>
+<p>Index 3 means “state 0 <em>or</em> state 1.” Index 6 means “any state at all.” The power of this is that a single row in a probability table can now stand in for many exact-state combinations at once.</p>
+</section>
+<hr class="docutils" />
+<section id="the-c-matrix">
+<h2>The C Matrix<a class="headerlink" href="#the-c-matrix" title="Link to this heading"></a></h2>
+<p>The <strong>C matrix</strong> is the data structure at the heart of a CPM (Conditional Probability Matrix). Each row assigns a (possibly composite) state to every variable in the distribution, and a companion probability vector <span class="math notranslate nohighlight">\(p\)</span> gives each row’s probability.</p>
+<section id="a-concrete-example-series-system">
+<h3>A Concrete Example: Series System<a class="headerlink" href="#a-concrete-example-series-system" title="Link to this heading"></a></h3>
+<p>Consider a series system <span class="math notranslate nohighlight">\(S\)</span> with four components <span class="math notranslate nohighlight">\(X_1, X_2, X_3, X_4\)</span>. Each component is binary: 0 = failed, 1 = survived. The system fails if <em>any</em> component fails.</p>
+<section id="the-brute-force-table">
+<h4>The brute-force table<a class="headerlink" href="#the-brute-force-table" title="Link to this heading"></a></h4>
+<p>Without composite states, you need all <span class="math notranslate nohighlight">\(2^4 = 16\)</span> combinations (columns: <span class="math notranslate nohighlight">\([S,\; X_1,\; X_2,\; X_3,\; X_4]\)</span>):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span> S  X1  X2  X3  X4
+[0   0   0   0   0]   &lt;- system fails
+[0   0   0   0   1]
+[0   0   0   1   0]
+[0   0   0   1   1]
+[0   0   1   0   0]
+[0   0   1   0   1]
+[0   0   1   1   0]
+[0   0   1   1   1]
+[0   1   0   0   0]
+[0   1   0   0   1]
+[0   1   0   1   0]
+[0   1   0   1   1]
+[0   1   1   0   0]
+[0   1   1   0   1]
+[0   1   1   1   0]
+[1   1   1   1   1]   &lt;- system survives (all Xi = 1)
+</pre></div>
+</div>
+<p>Since this is a deterministic function, every row has probability 1.</p>
+</section>
+<section id="the-compressed-c-matrix-5-rows-instead-of-16">
+<h4>The compressed C matrix (5 rows instead of 16)<a class="headerlink" href="#the-compressed-c-matrix-5-rows-instead-of-16" title="Link to this heading"></a></h4>
+<p>A series system has four minimal failure rules (one per component) and one survival rule. Using composite states, these map to just <strong>5 rows</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span> S  X1  X2  X3  X4
+[0   0   2   2   2]   &lt;- X1 fails; X2, X3, X4 can be anything  (8 combinations)
+[0   1   0   2   2]   &lt;- X1 survives, X2 fails; X3, X4 anything (4 combinations)
+[0   1   1   0   2]   &lt;- X1, X2 survive, X3 fails; X4 anything  (2 combinations)
+[0   1   1   1   0]   &lt;- X1, X2, X3 survive, X4 fails           (1 combination)
+[1   1   1   1   1]   &lt;- all survive                             (1 combination)
+</pre></div>
+</div>
+<p>Here, composite state 2 means {0, 1} — “either failed or survived,” i.e. <em>any state</em>. The five rows cover all 16 combinations (<span class="math notranslate nohighlight">\(8 + 4 + 2 + 1 + 1 = 16\)</span>), and the probability vector is again all ones.</p>
+<p>The compression ratio improves dramatically with scale: for <span class="math notranslate nohighlight">\(N\)</span> binary components, <span class="math notranslate nohighlight">\(2^N\)</span> rows collapse to just <span class="math notranslate nohighlight">\(N + 1\)</span>. A system with a million components? That’s <span class="math notranslate nohighlight">\(1{,}000{,}001\)</span> rows instead of a number with over 300,000 digits.</p>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="the-overlap-trap">
+<h2>The Overlap Trap<a class="headerlink" href="#the-overlap-trap" title="Link to this heading"></a></h2>
+<p>You might be tempted to write the C matrix like this — one row per component failure:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span> S  X1  X2  X3  X4
+[0   0   2   2   2]   &lt;- fails if X1 = 0
+[0   2   0   2   2]   &lt;- fails if X2 = 0
+[0   2   2   0   2]   &lt;- fails if X3 = 0
+[0   2   2   2   0]   &lt;- fails if X4 = 0
+[1   1   1   1   1]   &lt;- survives
+</pre></div>
+</div>
+<p>This looks clean, but it’s <strong>wrong</strong>. The rows overlap: the combination <span class="math notranslate nohighlight">\((S{=}0,\; X_1{=}0,\; X_2{=}0,\; X_3{=}1,\; X_4{=}1)\)</span> is counted by both the first row and the second. This double-counting inflates probabilities beyond 1 during inference.</p>
+<section id="the-fix-branch-and-bound">
+<h3>The fix: branch and bound<a class="headerlink" href="#the-fix-branch-and-bound" title="Link to this heading"></a></h3>
+<p>The correct 5-row encoding avoids overlap by structuring the rows as a <strong>branch-and-bound</strong> decomposition — essentially a decision tree. The figure below shows this for the series system:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/bnb_series.png"><img alt="Branch-and-bound decomposition of the series system" src="_images/bnb_series.png" style="width: 400px;" />
+</a>
+</figure>
+<p>Each branch in the tree corresponds directly to a row in the compressed C matrix:</p>
+<ol class="arabic simple">
+<li><p><strong><span class="math notranslate nohighlight">\(X_1 \xrightarrow{0} S = 0\)</span></strong> — The leftmost branch: <span class="math notranslate nohighlight">\(X_1\)</span> fails, so the system fails regardless of the remaining components. Because <span class="math notranslate nohighlight">\(X_2, X_3, X_4\)</span> are never examined on this branch, they get composite state 2 (any state) → <strong>Row 1:</strong> <code class="docutils literal notranslate"><span class="pre">[0</span>&#160; <span class="pre">0</span>&#160; <span class="pre">2</span>&#160; <span class="pre">2</span>&#160; <span class="pre">2]</span></code>, covering 8 combinations.</p></li>
+<li><p><strong><span class="math notranslate nohighlight">\(X_1 \xrightarrow{1} X_2 \xrightarrow{0} S = 0\)</span></strong> — <span class="math notranslate nohighlight">\(X_1\)</span> survives, but <span class="math notranslate nohighlight">\(X_2\)</span> fails. <span class="math notranslate nohighlight">\(X_3\)</span> and <span class="math notranslate nohighlight">\(X_4\)</span> are unexamined → <strong>Row 2:</strong> <code class="docutils literal notranslate"><span class="pre">[0</span>&#160; <span class="pre">1</span>&#160; <span class="pre">0</span>&#160; <span class="pre">2</span>&#160; <span class="pre">2]</span></code>, covering 4 combinations.</p></li>
+<li><p><strong><span class="math notranslate nohighlight">\(X_1 \xrightarrow{1} X_2 \xrightarrow{1} X_3 \xrightarrow{0} S = 0\)</span></strong> — <span class="math notranslate nohighlight">\(X_1\)</span> and <span class="math notranslate nohighlight">\(X_2\)</span> survive, <span class="math notranslate nohighlight">\(X_3\)</span> fails. <span class="math notranslate nohighlight">\(X_4\)</span> is unexamined → <strong>Row 3:</strong> <code class="docutils literal notranslate"><span class="pre">[0</span>&#160; <span class="pre">1</span>&#160; <span class="pre">1</span>&#160; <span class="pre">0</span>&#160; <span class="pre">2]</span></code>, covering 2 combinations.</p></li>
+<li><p><strong><span class="math notranslate nohighlight">\(X_1 \xrightarrow{1} X_2 \xrightarrow{1} X_3 \xrightarrow{1} X_4 \xrightarrow{0} S = 0\)</span></strong> — The first three survive, <span class="math notranslate nohighlight">\(X_4\)</span> fails → <strong>Row 4:</strong> <code class="docutils literal notranslate"><span class="pre">[0</span>&#160; <span class="pre">1</span>&#160; <span class="pre">1</span>&#160; <span class="pre">1</span>&#160; <span class="pre">0]</span></code>, covering 1 combination.</p></li>
+<li><p><strong><span class="math notranslate nohighlight">\(X_1 \xrightarrow{1} X_2 \xrightarrow{1} X_3 \xrightarrow{1} X_4 \xrightarrow{1} S = 1\)</span></strong> — All survive → <strong>Row 5:</strong> <code class="docutils literal notranslate"><span class="pre">[1</span>&#160; <span class="pre">1</span>&#160; <span class="pre">1</span>&#160; <span class="pre">1</span>&#160; <span class="pre">1]</span></code>, covering 1 combination.</p></li>
+</ol>
+<p>Notice the pattern: variables that appear <em>after</em> the terminating branch are never reached, so they take the composite “any state” value. This is exactly why composite states enable compression — they encode “don’t care” conditions that arise naturally from the tree structure.</p>
+<p>Because each path through the tree is mutually exclusive, no state combination is ever counted twice.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="key-takeaways">
+<h2>Key Takeaways<a class="headerlink" href="#key-takeaways" title="Link to this heading"></a></h2>
+<p>Composite states let a single C matrix row represent an entire <em>family</em> of state combinations. This transforms exponential-sized probability tables into compact, tractable representations — making it possible to run Bayesian inference on systems with thousands or millions of components.</p>
+<p>The critical rule when building a C matrix: <strong>rows must never overlap</strong>. Branch-and-bound decomposition is a reliable way to guarantee this.</p>
+</section>
+<hr class="docutils" />
+<section id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Byun, J.-E. and Song, J. (2021). <em>Generalized matrix-based Bayesian network for multi-state systems</em>. Reliability Engineering &amp; System Safety, 211, 107468. <a class="reference external" href="https://doi.org/10.1016/j.ress.2021.107468">https://doi.org/10.1016/j.ress.2021.107468</a></p></li>
+<li><p><a class="reference internal" href="getting_started_MBN.html"><span class="doc">Getting Started with MBNpy</span></a> — Introduction to CPMs and variable elimination in MBNpy</p></li>
+<li><p><a class="reference internal" href="getting_started_BRC.html"><span class="doc">Getting Started with the BRC Algorithm</span></a> — The BRC algorithm and branch-based C matrix construction</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started_BRC.html" class="btn btn-neutral float-left" title="Getting Started with the BRC Algorithm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="variable.html" class="btn btn-neutral float-right" title="variable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, DUCO team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
