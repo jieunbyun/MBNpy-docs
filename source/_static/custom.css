@@ -1,0 +1,5 @@
+.no-float {
+    float: none !important;
+    display: block;
+    clear: both;
+}
