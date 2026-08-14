@@ -15,9 +15,9 @@ Bayesian network is a probabilistic graphical model that can map the causality b
 
 For further reading:
 
-* For a brief introduction of Bayesian network in the context of system reliability, refer to `this blog series <https://jieunbyun.github.io/categories/bn/>`_.
+* For a brief introduction of Bayesian network in the context of system reliability, refer to `this blog article <https://jieunbyun.github.io/categories/bn/>`_.
 * For a brief introduction of the motivation and concept of matrix-based Bayesian network, refer to `What's MBN? <https://jieunbyun.github.io/bn/2024/01/22/1_whats_mbn.html>`_.
-* For a journal paper, refer to Byun, J. E. & Song, J. (2021). Generalized matrix-based Bayesian network for multi-state systems. *Reliability Engineering & System Safety*, 211, 107468. `doi: 10.1016/j.ress.2021.107468 <https://doi.org/10.1016/j.ress.2021.107468>`_.
+* For a formal publication, refer to Byun, J. E. & Song, J. (2021). Generalized matrix-based Bayesian network for multi-state systems. *Reliability Engineering & System Safety*, 211, 107468. `doi: 10.1016/j.ress.2021.107468 <https://doi.org/10.1016/j.ress.2021.107468>`_.
 
 .. toctree::
    :maxdepth: 1
