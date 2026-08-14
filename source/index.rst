@@ -8,7 +8,7 @@ MBN enables applying Bayesian network for **large-scale systems** (i.e. high-dim
 Bayesian network is a probabilistic graphical model that can map the causality between variables, for example:
 
 .. figure:: _static/img/bn_illust.png
-   :width: 400
+   :width: 300
    :align: center
 
    An illustration of a Bayesian network.
